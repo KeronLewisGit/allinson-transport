@@ -62,71 +62,77 @@
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-surface focus:px-4 focus:py-3 focus:shadow-md">Skip to content</a>
 
     @if (ga('preview'))
-        <div class="bg-gold text-sm text-[#1b1619]">
+        <div class="bg-gold text-sm text-[#231f20]">
             <p class="wrap flex items-start gap-2 py-2.5"><x-icon name="alert" class="mt-0.5 h-4 w-4 flex-none" /><span><strong class="font-bold">Concept preview prepared for George Allinson (Transport) Ltd.</strong> This is not the company's official website. Forms sent here do not reach the company.</span></p>
         </div>
     @endif
 
-    <div class="hidden bg-cab-950 text-[0.875rem] text-white/80 lg:block">
-        <div class="wrap flex h-10 items-center gap-6">
-            <span class="inline-flex items-center gap-2"><x-icon name="map-pin" class="h-4 w-4 text-gold" />{{ $address['street'] }}, {{ $address['city'] }} {{ $address['postcode'] }}</span>
-            <a href="{{ tel_href($phone) }}" class="inline-flex min-h-10 items-center gap-2 hover:text-white"><x-icon name="phone" class="h-4 w-4 text-gold" />{{ format_phone($phone) }}</a>
-            <a href="mailto:{{ $email }}" class="inline-flex min-h-10 items-center gap-2 hover:text-white"><x-icon name="mail" class="h-4 w-4 text-gold" />{{ $email }}</a>
-            <a href="{{ route('warehousing.create') }}" class="ml-auto inline-flex min-h-10 items-center gap-2 font-semibold text-white hover:text-gold"><x-icon name="warehouse" class="h-4 w-4" />Warehousing enquiry</a>
-            <a href="{{ route('careers.index') }}" class="inline-flex min-h-10 items-center gap-2 font-semibold text-white hover:text-gold"><x-icon name="id-card" class="h-4 w-4" />Driving jobs</a>
-        </div>
-    </div>
-
-    <header class="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
-        <div class="wrap flex h-[4.5rem] items-center gap-2 min-[400px]:gap-3">
-            <a href="{{ route('home') }}" class="mr-auto inline-flex min-h-11 flex-none items-center" aria-label="Allinson Transport, home"><x-logo /></a>
-
-            <nav class="hidden items-center lg:flex" aria-label="Main">
-                @foreach ($nav as $item)
-                    @php($current = request()->routeIs($item['match']))
-                    <a href="{{ route($item['route']) }}" @class(['relative whitespace-nowrap px-2.5 py-2.5 text-[0.9375rem] font-semibold transition-colors xl:px-3.5', 'text-ink' => $current, 'text-ink-2 hover:text-ink' => ! $current]) @if($current) aria-current="page" @endif>
-                        {{ $item['label'] }}
-                        @if ($current)<span class="chevrons thin absolute inset-x-2.5 -bottom-[0.95rem] !h-[5px] xl:inset-x-3.5" aria-hidden="true"></span>@endif
-                    </a>
-                @endforeach
-            </nav>
-
-            <button type="button" onclick="toggleTheme()" class="hidden h-11 w-11 flex-none items-center justify-center text-ink-2 hover:bg-surface-2 hover:text-ink sm:inline-flex" aria-label="Switch light or dark theme">
+    {{--
+        Header, after the company's own: the name and GA badge on a dark band (its night-time depot
+        header), then the gold navigation bar with gold rules between links and "t: / e:" on the
+        right. On desktop the gold bar sticks; once the dark band has scrolled away the GA badge
+        takes the place of the home icon. On phones the dark band sticks and holds the menu.
+    --}}
+    <div class="brandbar sticky top-0 z-40 bg-cab-900 text-white lg:static" data-brandbar>
+        <div class="wrap flex h-[4.25rem] items-center gap-2 min-[400px]:gap-3 lg:h-[5.5rem]">
+            <a href="{{ route('home') }}" class="mr-auto inline-flex min-h-11 min-w-0 items-center" aria-label="George Allinson (Transport) Ltd, home"><x-logo tone="light" /></a>
+            <p class="hidden text-right text-[0.9375rem] leading-snug text-white/80 lg:block">
+                <span class="block">t: <a href="{{ tel_href($phone) }}" class="font-bold text-white hover:text-gold">{{ format_phone($phone) }}</a></span>
+                <span class="block">e: <a href="mailto:{{ $email }}" class="font-bold text-white hover:text-gold">{{ $email }}</a></span>
+            </p>
+            <span class="hidden h-10 w-px bg-white/15 lg:block" aria-hidden="true"></span>
+            <button type="button" data-theme-toggle onclick="toggleTheme(event)" class="hidden h-11 w-11 flex-none items-center justify-center text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex" aria-label="Switch light or dark theme">
                 <x-icon name="moon" class="h-5 w-5 dark-hide" /><x-icon name="sun" class="hidden h-5 w-5 dark-show" />
             </button>
-            <a href="{{ route('quotes.create') }}" class="btn btn-primary btn-sm hidden flex-none whitespace-nowrap lg:inline-flex">Get a quote<x-icon name="arrow-right" class="nudge h-4 w-4" /></a>
-            <button type="button" class="inline-flex h-11 w-11 flex-none items-center justify-center ring-1 ring-line-strong lg:hidden" @click="menu = !menu" :aria-expanded="menu.toString()" aria-controls="mobile-menu" aria-label="Menu">
+            <button type="button" class="inline-flex h-11 w-11 flex-none items-center justify-center text-white ring-1 ring-white/40 lg:hidden" @click="menu = !menu" :aria-expanded="menu.toString()" aria-controls="mobile-menu" aria-label="Menu">
                 <x-icon name="menu" x-show="!menu" /><x-icon name="x" x-show="menu" x-cloak />
             </button>
         </div>
-        <div id="mobile-menu" class="border-t border-line bg-surface lg:hidden" x-show="menu" x-cloak x-transition.opacity>
+        <div id="mobile-menu" class="max-h-[calc(100dvh-4.25rem)] overflow-y-auto bg-surface text-ink lg:hidden" x-show="menu" x-cloak x-transition.opacity>
+            <div class="goldbar-strip h-2" aria-hidden="true"></div>
             <nav class="wrap flex flex-col py-3" aria-label="Mobile">
-                <a href="{{ route('home') }}" class="font-display px-1 py-2.5 text-2xl font-extrabold uppercase">Home</a>
+                <a href="{{ route('home') }}" class="mnav" @if(request()->routeIs('home')) aria-current="page" @endif>Home</a>
                 @foreach ($nav as $item)
-                    <a href="{{ route($item['route']) }}" class="font-display px-1 py-2.5 text-2xl font-extrabold uppercase" @if(request()->routeIs($item['match'])) aria-current="page" @endif>{{ $item['label'] }}</a>
+                    <a href="{{ route($item['route']) }}" class="mnav" @if(request()->routeIs($item['match'])) aria-current="page" @endif>{{ $item['label'] }}</a>
                 @endforeach
-                <a href="{{ route('warehousing.create') }}" class="font-display px-1 py-2.5 text-2xl font-extrabold uppercase">Warehousing enquiry</a>
+                <a href="{{ route('warehousing.create') }}" class="mnav">Warehousing enquiry</a>
                 <div class="mt-3 grid gap-3 border-t border-line pt-5 sm:grid-cols-2">
                     <a href="{{ route('quotes.create') }}" class="btn btn-primary">Get a quote</a>
                     <a href="{{ tel_href($phone) }}" class="btn btn-outline"><x-icon name="phone" class="h-4 w-4" />{{ format_phone($phone) }}</a>
                 </div>
-                <button type="button" onclick="toggleTheme()" class="mt-3 flex min-h-11 items-center gap-2 px-1 text-left font-semibold text-ink-2"><x-icon name="moon" class="h-5 w-5" />Switch light or dark theme</button>
+                <button type="button" data-theme-toggle onclick="toggleTheme(event)" class="mt-3 flex min-h-11 items-center gap-2 px-1 text-left font-semibold text-ink-2"><x-icon name="moon" class="h-5 w-5" />Switch light or dark theme</button>
             </nav>
         </div>
-    </header>
+    </div>
+
+    <nav class="goldbar sticky top-0 z-40 hidden lg:block" aria-label="Main" data-goldbar>
+        <div class="wrap flex h-[3.25rem] items-stretch">
+            <a href="{{ route('home') }}" class="gnav gnav-home" @if(request()->routeIs('home')) aria-current="page" @endif>
+                <x-icon name="home" class="gnav-house h-5 w-5" /><x-badge class="gnav-badge h-6 w-[2.6rem]" /><span class="sr-only">Home</span>
+            </a>
+            @foreach ($nav as $item)
+                @php($current = request()->routeIs($item['match']))
+                <a href="{{ route($item['route']) }}" class="gnav" @if($current) aria-current="page" @endif>{{ $item['label'] }}</a>
+            @endforeach
+            <a href="{{ route('warehousing.create') }}" class="gnav ml-auto border-l border-l-[var(--goldbar-rule)]"><x-icon name="warehouse" class="h-4 w-4" />Warehousing</a>
+            <a href="{{ route('quotes.create') }}" class="btn btn-primary my-1.5 ml-3 min-h-0 whitespace-nowrap px-4 py-0 text-[0.9375rem]">Get a quote<x-icon name="arrow-right" class="nudge h-4 w-4" /></a>
+        </div>
+        <span class="scroll-progress" aria-hidden="true"></span>
+    </nav>
 
     <main id="main">
         {{ $slot }}
     </main>
 
     <footer class="site-footer mt-24 bg-cab-900 text-white/75">
-        <div class="chevrons tall" aria-hidden="true"></div>
+        <div class="goldbar-strip h-1.5" aria-hidden="true"></div>
+        <div class="chevrons" aria-hidden="true"></div>
         <div class="tacho overflow-hidden">
             <div class="wrap grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.15fr]">
                 <div>
                     <x-logo tone="light" />
                     <p class="mt-5 max-w-xs text-white/75">{{ ga('footer_line') }}</p>
-                    <p class="plate mt-5 text-sm">{{ ga('tagline') }}</p>
+                    <p class="mt-4 text-xl font-light tracking-wide text-white">{{ str(ga('tagline'))->title() }}</p>
                     <a href="{{ tel_href($phone) }}" class="font-display mt-6 flex min-h-12 items-center gap-2.5 text-3xl font-extrabold text-white hover:text-gold"><x-icon name="phone" class="h-5 w-5" />{{ format_phone($phone) }}</a>
                     <p class="mt-1"><a class="inline-flex min-h-11 items-center hover:text-white" href="mailto:{{ $email }}">{{ $email }}</a></p>
                 </div>

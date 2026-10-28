@@ -169,6 +169,53 @@ async function logout() {
 
 const shots = [];
 for (const [n, u] of [...PUBLIC, ...FLOWS]) shots.push(await shoot(n, u));
+
+/*
+ * Motion stills for the "Motion and interaction" pages: the same screens with motion on,
+ * captured part-way through each effect.
+ */
+async function still(name, url, { w = 1440, h = 900, wait = 1200, prep = null, scheme = 'light', until = 'networkidle0' } = {}) {
+  await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'no-preference' }, { name: 'prefers-color-scheme', value: scheme }]);
+  await page.setViewport({ width: w, height: h, deviceScaleFactor: 1, isMobile: w < 500, hasTouch: w < 500 });
+  await page.goto(BASE + url, { waitUntil: until });
+  if (prep) await prep();
+  await new Promise(r => setTimeout(r, wait));
+  const file = path.join(OUT, `${name}.jpg`);
+  await page.screenshot({ path: file, type: 'jpeg', quality: 72 });
+  await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }, { name: 'prefers-color-scheme', value: 'light' }]);
+  console.log(`✓ ${name} still`);
+  return { name, url, chunks: [path.resolve(file)], labels: [[]], sizes: [[w, h]] };
+}
+const centre = (sel) => page.evaluate((s) => document.querySelector(s)?.scrollIntoView({ block: 'center' }), sel);
+const MOTION = [
+  ['mo-hero', '/', { wait: 1050, until: 'domcontentloaded' }],
+  ['mo-hero-phone', '/', { w: 390, h: 844, wait: 1150, until: 'domcontentloaded' }],
+  ['mo-count', '/', { wait: 650, prep: () => centre('#figures-title') }],
+  ['mo-map', '/', { wait: 1500, prep: () => centre('.depot-map') }],
+  ['mo-quote', '/quote', { wait: 1300, prep: async () => {
+    await page.type('#f-goods', 'Steel portal frame sections');
+    await page.type('#f-weight_kg', '9200');
+    await page.type('#f-collection_postcode', 'ls10 1rj');
+    await page.type('#f-delivery_postcode', 'gl2 5bx');
+    await page.evaluate(() => { const d = document.querySelector('#f-collection_date'); d.value = new Date(Date.now() + 6 * 864e5).toISOString().slice(0, 10); d.dispatchEvent(new Event('change', { bubbles: true })); });
+    await page.evaluate(() => scrollTo(0, document.querySelector('form[action$="/quote"] fieldset:nth-of-type(2)').getBoundingClientRect().top + scrollY - 70));
+  } }],
+  ['mo-story', '/careers', { wait: 900, prep: () => centre('[data-story] .story-step:nth-child(3)') }],
+  ['mo-theme', '/', { scheme: 'dark', wait: 2300, prep: () => page.evaluate(() => scrollTo(0, document.querySelector('#figures-title').getBoundingClientRect().top + scrollY - 260)) }],
+  ['mo-thanks', '/contact', { wait: 1750, prep: async () => {
+    await page.evaluate(() => {
+      const f = document.querySelector('form[action$="/contact"]');
+      for (const [n, v] of [['name', 'Demo Shipper (sample)'], ['email', 'shipper@example.com'], ['phone', '07700 900123'], ['message', 'Sample message for the proposal screenshots.']]) { const el = f.elements.namedItem(n); if (el) el.value = v; }
+      f.querySelector('input[name=topic]')?.click();
+      f.querySelectorAll('input[type=checkbox][required]').forEach((c) => { c.checked = true; });
+    });
+    await new Promise(r => setTimeout(r, 2600)); // the form's minimum fill time
+    await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), page.evaluate(() => document.querySelector('form[action$="/contact"]').submit())]);
+    await page.evaluate(() => scrollTo(0, 330));
+  } }],
+];
+for (const [n, u, o] of MOTION) shots.push(await still(n, u, o));
+
 // Staff screens are captured at a 1280 × 1000 laptop size: their content is short, and the larger
 // type and taller frame fill a letter page instead of leaving its lower half blank.
 const DESK = { width: 1280, height: 1000 };

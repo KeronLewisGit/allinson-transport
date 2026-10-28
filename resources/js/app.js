@@ -1,15 +1,7 @@
 import Alpine from 'alpinejs';
+import { startMotion } from './motion';
 
 document.documentElement.classList.add('js'); // also set in <head>; kept for safety
-
-/* Theme toggle. The initial theme is set by an inline script in <head> to avoid a flash. */
-window.toggleTheme = () => {
-    const root = document.documentElement;
-    const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    const next = current === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
-    try { localStorage.setItem('theme', next); } catch (e) { /* storage blocked: the choice lasts this page only */ }
-};
 
 /* Scroll reveal */
 const reveal = () => {
@@ -46,6 +38,25 @@ Alpine.data('quoteForm', (service, adr) => ({
     get pallets() { return ['part_load', 'pallets', 'warehousing'].includes(this.service); },
     get dimensions() { return ['hiab', 'abnormal'].includes(this.service); },
     get warehousing() { return this.service === 'warehousing'; },
+    // Route strip: the lorry moves a third of the way for each finished section of the form.
+    from: '',
+    to: '',
+    done: [false, false, false],
+    get progress() { return this.submitting ? 1 : this.done.filter(Boolean).length / 3; },
+    init() { this.$nextTick(() => this.track()); },
+    track() {
+        const f = this.$refs.form;
+        if (!f) return;
+        const v = (n) => (f.elements.namedItem(n)?.value ?? '').trim();
+        const pc = (n) => v(n).toUpperCase().replace(/\s+/g, ' ').slice(0, 9);
+        this.from = pc('collection_postcode');
+        this.to = pc('delivery_postcode');
+        this.done = [
+            v('goods') !== '' && v('weight_kg') !== '',
+            this.from.length >= 5 && this.to.length >= 5 && v('collection_date') !== '',
+            v('contact_name') !== '' && v('email').includes('@') && v('phone').length >= 7,
+        ];
+    },
     submit(e) {
         if (!e.target.checkValidity()) return;
         this.submitting = true;
@@ -99,5 +110,6 @@ Alpine.data('adminShell', () => ({
 
 window.Alpine = Alpine;
 Alpine.start();
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal);
-else reveal();
+const ready = () => { reveal(); startMotion(); };
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready);
+else ready();

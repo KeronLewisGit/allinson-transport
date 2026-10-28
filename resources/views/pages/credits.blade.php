@@ -15,5 +15,6 @@
                 </li>
             @endforeach
         </ul>
+        <p class="mt-10 measure text-ink-2">The company's own photographs (the depot at night, the fleet, the warehouses and the Hiab) are from its current website, allinsontransport.co.uk. The UK outline on the depot maps is from <a class="text-link" href="https://www.naturalearthdata.com/" rel="noopener" target="_blank">Natural Earth</a> (public domain).</p>
     </section>
 </x-layouts.site>

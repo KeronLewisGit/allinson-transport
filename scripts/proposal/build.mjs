@@ -1,5 +1,6 @@
 // Builds the client proposal (letter-size PDF) from the captured screenshots, in the site's own
-// palette and fonts (cab charcoal, livery red and gold; Big Shoulders and Overpass).
+// palette and fonts, matched to the company's own branding (beige page, red box headers, gold
+// navigation bar, black-and-gold GA badge; Roboto Condensed and Trebuchet MS).
 // Usage: npm run proposal (or node scripts/proposal/build.mjs after a capture).
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
@@ -25,13 +26,13 @@ const font = (prefix) => {
   return 'file://' + path.join(ASSETS, f);
 };
 const FONTS = [
-  ['Big Shoulders', 700, 'big-shoulders-700-normal'], ['Big Shoulders', 800, 'big-shoulders-800-normal'],
-  ['Overpass', 400, 'overpass-400-normal'], ['Overpass', 600, 'overpass-600-normal'], ['Overpass', 700, 'overpass-700-normal'],
+  ['Roboto Condensed', 700, 'roboto-condensed-700-normal'], ['Roboto Condensed', 800, 'roboto-condensed-800-normal'],
+  ['Fira Sans', 400, 'fira-sans-400-normal'], ['Fira Sans', 700, 'fira-sans-700-normal'],
 ].map(([fam, w, p]) => `@font-face { font-family: "${fam}"; font-weight: ${w}; font-style: normal; src: url("${font(p)}") format("woff2"); }`).join('\n');
 
 // The site's redrawn GA badge (after the gold-edged mark on the firm's current website).
-const MARK = (h = 34) => `<svg class="mark" viewBox="0 0 213 124" height="${h}" width="${Math.round(h * 213 / 124)}"><g fill="#1b1619" stroke="#d9ae5c" stroke-width="5"><path d="M3 62 76 4h53L84 58 62 69l22 19v33H62z"/><path d="M89 121V66L141 3l69 59-32 59h-43V86h-4v35z"/></g><path d="M133 45v29h27z" fill="#fff" stroke="#d9ae5c" stroke-width="3"/></svg>`;
-const WORDMARK = (dark = true) => `<div class="brand">${MARK(dark ? 44 : 34)}<div><span class="n ${dark ? '' : 'ink'}">Allinson</span><span class="s ${dark ? '' : 'ink'}">Transport · Darlington · Est. 1955</span></div></div>`;
+const MARK = (h = 34) => `<svg class="mark" viewBox="0 0 213 124" height="${h}" width="${Math.round(h * 213 / 124)}"><g fill="#231f20" stroke="#d7b273" stroke-width="5"><path d="M3 62 76 4h53L84 58 62 69l22 19v33H62z"/><path d="M89 121V66L141 3l69 59-32 59h-43V86h-4v35z"/></g><path d="M133 45v29h27z" fill="#fff" stroke="#d9ae5c" stroke-width="3"/></svg>`;
+const WORDMARK = (dark = true) => `<div class="brand">${MARK(dark ? 44 : 34)}<div><span class="n ${dark ? '' : 'ink'}">George Allinson</span><span class="s ${dark ? '' : 'ink'}">(Transport) Ltd · Darlington · Est. 1955</span></div></div>`;
 const plate = (code, label, dark = false) => `<p class="plate ${dark ? 'dark' : ''}"><span class="c">${esc(code)}</span><span class="l">${esc(label)}</span></p>`;
 
 /** Hand-written captions per slice (key = screen name, index = slice number), from what each slice shows. */
@@ -124,10 +125,10 @@ const CAPTIONS = {
 /** Screen definitions: section, key, title, bullets. */
 const SECTIONS = [
   { id: 'public', eyebrow: 'Part 1', code: '01', title: 'The public website', intro: 'A new allinsontransport.co.uk, written from the company\'s own pages and photographs. Every figure is quoted as the company publishes it, with the page it came from. Every inner page opens with the same charcoal band and despatch label, and every page works on a phone.', screens: [
-    ['home', 'Home page', ['Leads with the company\'s own lorry and its own words, "We care for your cargo".', 'Three actions up front: request a quote, ask about warehousing, call 01325 461241.']],
+    ['home', 'Home page', ['Leads with the company\'s GA badge, its own night photo of the depot and its own words, "We care for your cargo".', 'Three actions up front: request a quote, ask about warehousing, call 01325 461241.']],
     ['services', 'Services', ['Six lines of work, each with its source page.', 'Old addresses such as /page.php?id=3 redirect to the new pages.']],
     ['fleet', 'Fleet and warehousing', ['The published fleet, warehouse and container-yard figures, quoted exactly.']],
-    ['depots', 'Depots', ['Only the head office address is shown until the regional addresses are confirmed.']],
+    ['depots', 'Depots', ['A map draws routes out from Darlington to each region.', 'Only the head office address is shown until the regional addresses are confirmed.']],
     ['about', 'About the company', ['Family run and owned since 1955, in the company\'s own words.']],
     ['contact', 'Contact', ['Telephone, email, head office and a message form.']],
   ]},
@@ -235,6 +236,11 @@ function screenPages(sec, [key, title, bullets]) {
 }
 
 const foot = () => `<footer class="foot"><span class="fl">${MARK(12)}George Allinson (Transport) Ltd · Website proposal</span><span>Code Canvas Consultants Ltd · ${esc(DATE)}</span></footer>`;
+
+const PITCH = path.resolve('scripts/proposal/assets');
+const stills = (list) => `<div class="stills">${list.map(([k, t, d]) => k
+  ? `<figure><img src="${img(chunks[k].chunks[0])}" alt="${esc(t)}"><figcaption><b>${esc(t)}</b>${esc(d)}</figcaption></figure>`
+  : `<div class="still-note"><b>${esc(t)}</b>${d}</div>`).join('')}</div>`;
 const notes = (list) => `<div class="phone-notes">${list.map(([t, d]) => `<div><b>${esc(t)}</b>${esc(d)}</div>`).join('')}</div>`;
 const phones = (list) => `<div class="phones">${list.map(([k, c]) => `<figure><img src="${img(chunks[k].chunks[0])}" alt="${esc(c)}"><figcaption>${esc(c)}</figcaption></figure>`).join('')}</div>`;
 
@@ -243,30 +249,30 @@ const html = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><tit
 
   ${FONTS}
   @page { size: Letter; margin: 0.5in 0.6in 0.55in; }
-  :root { --cab: #1b1619; --cab-950: #110d10; --bg: #f6f4f0; --surface-2: #ece8e2; --ink: #1b1619; --ink-2: #3e3539; --ink-3: #5d5358; --line: #d8d0c8; --gold: #d9ae5c; --red: #b3131e; --livery: #c8102e; --red-soft: #fbeceb; --label: #fffdf8; }
+  :root { --cab: #231f20; --cab-950: #171415; --bg: #f4efe9; --surface-2: #ebe3d9; --ink: #231f20; --ink-2: #4a4044; --ink-3: #5c5154; --line: #dccfc1; --gold: #d7b273; --red: #c81c22; --livery: #d92026; --red-soft: #fbe6e3; --label: #fffdf8; --goldbar: linear-gradient(180deg, #ece0a0, #d9c433); }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; font-family: "Overpass", system-ui, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  h1, h2, .display { font-family: "Big Shoulders", "Arial Narrow", sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0; color: var(--ink); margin: 0; line-height: 0.98; }
-  h3 { font-family: "Overpass", system-ui, sans-serif; font-weight: 700; margin: 0; font-size: 11.5pt; }
+  html, body { margin: 0; padding: 0; font-family: "Trebuchet MS", "Fira Sans", system-ui, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  h1, h2, .display { font-family: "Roboto Condensed", "Arial Narrow", sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0; color: var(--ink); margin: 0; line-height: 0.98; }
+  h3 { font-family: "Trebuchet MS", "Fira Sans", system-ui, sans-serif; font-weight: 700; margin: 0; font-size: 11.5pt; }
   .page { page-break-after: always; break-after: page; height: 9.95in; display: flex; flex-direction: column; overflow: hidden; }
   .page:last-child { page-break-after: auto; }
   .eyebrow { font-size: 8pt; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--red); margin: 0 0 4px; }
   /* junction-number plate, as on the site */
   .plate { align-self: flex-start; display: inline-flex; align-items: stretch; border: 1.5px solid currentColor; padding: 2px; font-size: 7.5pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; line-height: 1; color: var(--ink-2); margin: 0 0 12px; }
   .plate span { display: inline-flex; align-items: center; padding: 5px 7px 3px; }
-  .plate .c { background: var(--ink); color: var(--label); font-family: "Big Shoulders"; font-weight: 800; font-size: 10pt; letter-spacing: .04em; }
+  .plate .c { background: var(--ink); color: var(--label); font-family: "Roboto Condensed"; font-weight: 800; font-size: 10pt; letter-spacing: .04em; }
   .plate.dark { color: rgba(255,255,255,.85); } .plate.dark .c { background: var(--label); color: var(--cab); }
   .chevrons { height: 12px; background: repeating-linear-gradient(-45deg, var(--livery) 0 9px, #fff 9px 18px); }
   /* cover and dividers: the site's charcoal band */
   .dark-page { background: var(--cab); color: #fff; padding: 0.6in 0.6in 0.55in; position: relative; overflow: hidden; }
   .dark-page h1 { color: #fff; }
-  .cover { justify-content: space-between; background-image: linear-gradient(180deg, rgba(17,13,16,.45), rgba(17,13,16,.94) 60%), url("${img(path.join(ROOT, 'public/img/a40-1600.webp'))}"); background-size: cover; background-position: 55% 0; }
+  .cover { justify-content: space-between; background-image: linear-gradient(180deg, rgba(23,20,21,.45), rgba(23,20,21,.94) 60%), url("${img(path.join(ROOT, 'public/img/own-depot-night-1400.webp'))}"); background-size: cover; background-position: 55% 0; }
   .cover h1 { font-size: 50pt; margin: 14px 0 16px; max-width: 6.4in; }
   .cover .accent { color: var(--gold); }
   .cover .lead { color: rgba(255,255,255,.88); font-size: 12.5pt; max-width: 6in; margin: 0; }
   .cover .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; border-top: 1px solid rgba(255,255,255,.2); padding-top: 16px; font-size: 9.5pt; color: rgba(255,255,255,.82); }
   .cover .meta b { display: block; color: var(--gold); font-size: 8pt; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 4px; }
-  .brand { display: flex; align-items: center; gap: 10px; } .brand .n { display: block; font-family: "Big Shoulders"; font-weight: 800; font-size: 22pt; text-transform: uppercase; color: #fff; line-height: .9; } .brand .s { display: block; margin-top: 4px; font-size: 7pt; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.72); }
+  .brand { display: flex; align-items: center; gap: 10px; } .brand .n { display: block; font-family: "Roboto Condensed"; font-weight: 800; font-size: 22pt; text-transform: uppercase; color: #fff; line-height: .9; } .brand .s { display: block; margin-top: 4px; font-size: 7pt; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.72); }
   .brand .ink { color: var(--ink); } .brand .s.ink { color: var(--ink-3); }
   .mark { display: block; flex: none; }
   .divider { justify-content: center; }
@@ -280,28 +286,41 @@ const html = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><tit
   .prose p { margin: 0 0 8px; }
   .prose ul.plain { margin: 0 0 8px; padding-left: 16px; } .prose ul.plain li { margin: 2px 0; }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .card { border: 1px solid var(--line); border-top: 3px solid var(--livery); padding: 11px 13px; background: #fff; break-inside: avoid; }
-  .card h3 { margin-bottom: 5px; }
+  .card { border: 1px solid var(--line); padding: 11px 13px; background: #fff; break-inside: avoid; }
+  .card h3 { margin: -11px -13px 8px; padding: 6px 13px 5px; color: #fff; background: linear-gradient(180deg, #da2a2c, #d92026 55%, #c41a20); font-size: 10.5pt; }
   .card ul { margin: 0; padding-left: 15px; } .card li { margin: 2px 0; font-size: 9.6pt; }
   .evidence { border-left: 4px solid var(--red); background: var(--bg); padding: 10px 14px 10px 30px; margin: 8px 0 10px; }
   .evidence li { margin: 3px 0; }
   .src { font-size: 8pt; color: var(--ink-3); }
   .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0 6px; }
   .stat { background: var(--cab); color: #fff; padding: 12px 12px 11px; }
-  .stat b { display: block; font-family: "Big Shoulders"; font-weight: 800; font-size: 28pt; line-height: .9; color: #fff; border-left: 3px solid var(--gold); padding-left: 8px; }
+  .stat b { display: block; font-family: "Roboto Condensed"; font-weight: 800; font-size: 28pt; line-height: .9; color: #fff; border-left: 3px solid var(--gold); padding-left: 8px; }
   .stat span { display: block; margin-top: 8px; font-size: 8.5pt; color: rgba(255,255,255,.8); line-height: 1.3; }
   table.feat { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
   table.feat th, table.feat td { border-bottom: 1px solid var(--line); padding: 8px 8px; text-align: left; vertical-align: top; }
   table.feat th { background: var(--surface-2); font-size: 8pt; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); }
   .pill-row { display: flex; flex-wrap: wrap; gap: 5px; } .pill { border: 1px solid #e3b4b1; background: var(--red-soft); color: var(--red); padding: 2px 9px 1px; font-size: 8.5pt; font-weight: 600; }
   /* screenshot pages */
-  .shot-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; border-bottom: 2px solid var(--ink); padding-bottom: 6px; margin-bottom: 7px; }
+  .shot-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; border-bottom: 5px solid transparent; border-image: var(--goldbar) 1; box-shadow: 0 2px 0 var(--ink); padding-bottom: 6px; margin-bottom: 9px; }
   .shot-head h2 { font-size: 20pt; } .url { font-family: Menlo, Consolas, monospace; font-size: 8pt; color: var(--ink-3); margin: 0; white-space: nowrap; }
   .bullets { margin: 0 0 7px; padding-left: 16px; font-size: 9.3pt; } .bullets li { margin: 1px 0; } .bullets li::marker { color: var(--red); }
   figure { margin: 0 0 8px; display: block; text-align: center; }
   figure img { display: block; margin: 0 auto; border: 1px solid var(--line); }
   .cap { text-align: left; margin: 5px 0 0; font-size: 8.6pt; line-height: 1.35; color: var(--ink-2); border-left: 3px solid var(--livery); padding-left: 8px; }
   .cap .n { font-weight: 700; color: var(--ink-3); }
+  .stills { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin-top: 10px; }
+  .stills figure { margin: 0; text-align: left; }
+  .stills img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border: 1px solid var(--line); }
+  .stills figcaption { font-size: 8.6pt; line-height: 1.35; color: var(--ink-2); margin-top: 5px; border-left: 3px solid var(--livery); padding-left: 8px; }
+  .stills figcaption b, .still-note b { display: block; color: var(--ink); font-size: 9.5pt; }
+  .still-note { background: var(--bg); padding: 12px 14px; font-size: 9pt; color: var(--ink-2); }
+  .still-note ul { margin: 6px 0 0; padding-left: 15px; } .still-note li { margin: 3px 0; } .still-note li::marker { color: var(--red); }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
+  .compare figure { margin: 0; text-align: left; }
+  .compare img { width: 100%; aspect-ratio: 16 / 11; object-fit: cover; object-position: top; border: 1px solid var(--line); }
+  .compare figcaption { font-size: 9pt; font-weight: 700; margin-top: 5px; }
+  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 10px 0 4px; }
+  .swatches div { font-size: 8pt; color: var(--ink-2); } .swatches i { display: block; height: 26px; border: 1px solid var(--line); margin-bottom: 4px; }
   .phones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 12px; }
   .phones figure { margin: 0; }
   .phones img { width: 100%; border-radius: 14px; border: 7px solid var(--cab); }
@@ -312,7 +331,7 @@ const html = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><tit
   /* investment */
   .price { display: grid; grid-template-columns: 1.45fr 1fr; gap: 14px; align-items: stretch; margin: 6px 0 4px; }
   .price .big { background: var(--cab); color: #fff; padding: 16px 18px; }
-  .price .big .amt { white-space: nowrap; font-family: "Big Shoulders"; font-weight: 800; font-size: 34pt; line-height: 1; color: #fff; } .price .big .amt small { font-family: "Overpass"; font-size: 11pt; font-weight: 600; color: rgba(255,255,255,.75); }
+  .price .big .amt { white-space: nowrap; font-family: "Roboto Condensed"; font-weight: 800; font-size: 34pt; line-height: 1; color: #fff; } .price .big .amt small { font-family: "Trebuchet MS", "Fira Sans"; font-size: 11pt; font-weight: 600; color: rgba(255,255,255,.75); }
   .price .big p { color: rgba(255,255,255,.84); margin: 8px 0 0; font-size: 9.6pt; }
   .price .year { border: 2px solid var(--red); padding: 14px 16px; background: var(--red-soft); }
   .price .year div { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px dotted #d99a96; font-size: 10pt; } .price .year div:last-child { border: 0; }
@@ -321,7 +340,7 @@ const html = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><tit
   .sla { width: 100%; border-collapse: collapse; font-size: 9pt; margin-top: 4px; } .sla td, .sla th { border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: left; } .sla th { font-size: 7.8pt; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); background: var(--surface-2); }
   .weeks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 6px 0 10px; }
   .week { border: 1px solid var(--line); padding: 10px 12px; background: #fff; }
-  .week b { display: inline-block; font-family: "Big Shoulders"; font-weight: 800; font-size: 10pt; text-transform: uppercase; background: var(--ink); color: var(--label); padding: 3px 6px 1px; margin-bottom: 5px; }
+  .week b { display: inline-block; font-family: "Roboto Condensed"; font-weight: 800; font-size: 10pt; text-transform: uppercase; background: var(--ink); color: var(--label); padding: 3px 6px 1px; margin-bottom: 5px; }
   .week p { margin: 0; font-size: 9.5pt; }
   footer.foot { margin-top: auto; padding-top: 6px; font-size: 7.8pt; color: #857a7f; display: flex; justify-content: space-between; border-top: 1px solid var(--line); align-items: center; } footer.foot .fl { display: inline-flex; align-items: center; gap: 6px; }
 
@@ -405,6 +424,47 @@ ${sec.screens.map((s) => screenPages(sec, s)).join('')}
   <p style="margin:0 0 4px">A customer can accept a quote from the link in their email, and a planner or HR officer can check the queue from the yard.</p>
   ${phones([['m-quote-response', 'The customer\'s quote'], ['m-admin-dashboard', 'Back-office overview'], ['m-admin-application', 'Applicant checks']])}
   ${notes([['Accept in one tap', 'The quote link works on any phone and expires when the price does.'], ['Due first', 'Each overview opens on what that role has to act on today.'], ['One tap to call', 'Call or email the customer or applicant from the record.']])}
+  ${foot()}
+</section>
+
+<section class="page">
+  <header class="shot-head"><div><p class="eyebrow">Brand</p><h2>Still unmistakably Allinson</h2></div><p class="url">allinsontransport.co.uk</p></header>
+  <p style="margin:0 0 4px">The preview keeps what customers and drivers already recognise from the current site and the fleet: the black-and-gold GA badge, the company name in bold capitals, the gold navigation bar, red box headings, the beige page and "We care for your cargo" from the cab roofs. The badge is redrawn as a sharp vector so it stays crisp at any size; the spacing, type sizes, buttons and phone layout are new.</p>
+  <div class="compare">
+    <figure><img src="${img(path.join(PITCH, 'current-site-2026-10-28.jpg'))}" alt="The current website"><figcaption>Today: allinsontransport.co.uk, October 2026</figcaption></figure>
+    <figure><img src="${img(chunks['home'].chunks[0])}" alt="The new home page"><figcaption>The preview: same badge, colours and navigation, built for 2026</figcaption></figure>
+  </div>
+  <div class="swatches">
+    <div><i style="background:#d92026"></i>Livery red #d92026</div>
+    <div><i style="background:#d7b273"></i>Badge gold #d7b273</div>
+    <div><i style="background:linear-gradient(180deg,#ece0a0,#d9c433)"></i>Navigation gold</div>
+    <div><i style="background:#231f20"></i>Cab black #231f20</div>
+    <div><i style="background:#f4efe9"></i>Page beige #f4efe9</div>
+  </div>
+  <p class="src">Colours are taken from the current site's stylesheet and images and from the fleet livery, darkened slightly where needed so text passes WCAG AA contrast. Type: Trebuchet MS, as on the current site, with Roboto Condensed for headings in the spirit of the name lettering. A dark theme is built from the same palette.</p>
+  ${foot()}
+</section>
+
+<section class="page">
+  <header class="shot-head"><div><p class="eyebrow">Motion and interaction</p><h2>Movement that means something</h2></div><p class="url">stills from the live demo</p></header>
+  <p style="margin:0 0 4px">Each effect shows something true about the business: the badge, the published figures, the depots, a load moving from collection to delivery. It is light, built without heavy libraries, and switched off for anyone whose phone or computer asks for reduced motion.</p>
+  ${stills([
+    ['mo-hero', 'The badge draws itself', 'On arrival the GA badge draws in gold, "We care for your cargo" rises word by word and the despatch label drops into place, over the company\'s own night photo of the depot.'],
+    ['mo-count', 'Published figures count up', '120 vehicles, 250 trailers and 250,000 sq ft count up once, as the company publishes them. The final numbers are in the page for search engines and screen readers.'],
+    ['mo-map', 'Routes draw out from Darlington', 'Routes draw from Faverdale to each region. Only Faverdale is pinned as a site; the other markers show the region, until the depot addresses are confirmed.'],
+    ['mo-quote', 'A lorry follows the quote', 'As the shipper types, the postcodes appear at each end of the road and the lorry moves along as each part of the form is complete.'],
+  ])}
+  ${foot()}
+</section>
+
+<section class="page">
+  <header class="shot-head"><div><p class="eyebrow">Motion and interaction · continued</p><h2>From a 2012 Word form to a phone</h2></div><p class="url">stills from the live demo</p></header>
+  ${stills([
+    ['mo-story', 'Applying, told as a scroll story', 'The careers page strikes out the old Word file, then a red road fills and a lorry drives down the five steps as the driver scrolls: apply, call-back, documents, assessment drive, start.'],
+    ['mo-thanks', 'Received, stamped and on its way', 'After any form, the consignment label carrying the reference is stamped "Received" and the lorry drives off.'],
+    ['mo-theme', 'Light and dark themes', 'The dark theme is built from the cab black, livery red and badge gold and follows the visitor\'s phone setting; the switch in the header wipes it across from the button.'],
+    [null, 'Considerate by design', '<ul><li>Reduced-motion setting: nothing moves, everything is shown.</li><li>No JavaScript: every word, figure and step is still on the page.</li><li>The moving band of services pauses on hover, on keyboard focus or with its own button.</li><li>The gold bar picks up the badge as you scroll, and a red line shows how far down the page you are.</li><li>Only smooth, low-cost properties are animated, so it stays fluid on older phones.</li></ul>'],
+  ])}
   ${foot()}
 </section>
 

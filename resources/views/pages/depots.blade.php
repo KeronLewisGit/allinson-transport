@@ -21,11 +21,16 @@
         <x-lane :n="2">Regional facilities</x-lane>
         <h2 id="regions-title" class="display-2 mt-4">Where else we are</h2>
         <p class="mt-4 measure text-ink-2">Quote requests are sent to the depot nearest the collection, so the people pricing the job know the roads. Call head office for a depot's direct line.</p>
-        <ul class="mt-10 grid gap-5 md:grid-cols-2">
+        <div class="mt-10 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:items-start">
+        <figure class="sheet p-5">
+            <x-depot-map halo="var(--surface)" class="on-light mx-auto max-w-[22rem] text-ink" />
+            <figcaption class="mt-3 text-sm text-ink-3">Faverdale is the head office. The regional markers show the region each depot serves, not its site: the addresses are to be confirmed. Map outline: Natural Earth.</figcaption>
+        </figure>
+        <ul class="grid grid-cols-[minmax(0,1fr)] gap-5 md:grid-cols-2">
             @foreach (ga('depots') as $key => $d)
                 @continue($key === 'darlington')
                 <li class="sheet p-6">
-                    <div class="flex items-start justify-between gap-4">
+                    <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                         <div>
                             <h3 class="font-display text-3xl font-extrabold uppercase leading-none">{{ $d['name'] }}</h3>
                             <p class="mt-1.5 text-ink-3">{{ $d['region'] }}</p>
@@ -38,6 +43,7 @@
                 </li>
             @endforeach
         </ul>
+        </div>
         <p class="mt-6 text-sm text-ink-3">Source: <a class="text-link" href="{{ ga('sources.home.url') }}" rel="noopener">{{ ga('sources.home.label') }}</a>; <a class="text-link" href="{{ ga('sources.uk.url') }}" rel="noopener">{{ ga('sources.uk.label') }}</a></p>
     </section>
 

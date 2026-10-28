@@ -1,50 +1,42 @@
 {
-  "_big-shoulders-700-normal-BCJQMx3s.woff": {
-    "file": "assets/big-shoulders-700-normal-BCJQMx3s.woff",
-    "src": "_big-shoulders-700-normal-BCJQMx3s.woff"
+  "_fira-sans-400-normal-66xCkunx.woff": {
+    "file": "assets/fira-sans-400-normal-66xCkunx.woff",
+    "src": "_fira-sans-400-normal-66xCkunx.woff"
   },
-  "_big-shoulders-700-normal-BXkjPpB5.woff2": {
-    "file": "assets/big-shoulders-700-normal-BXkjPpB5.woff2",
-    "src": "_big-shoulders-700-normal-BXkjPpB5.woff2"
+  "_fira-sans-400-normal-a0AnQzuD.woff2": {
+    "file": "assets/fira-sans-400-normal-a0AnQzuD.woff2",
+    "src": "_fira-sans-400-normal-a0AnQzuD.woff2"
   },
-  "_big-shoulders-800-normal-BmnmSKe3.woff2": {
-    "file": "assets/big-shoulders-800-normal-BmnmSKe3.woff2",
-    "src": "_big-shoulders-800-normal-BmnmSKe3.woff2"
+  "_fira-sans-700-normal-CRhwpWTq.woff2": {
+    "file": "assets/fira-sans-700-normal-CRhwpWTq.woff2",
+    "src": "_fira-sans-700-normal-CRhwpWTq.woff2"
   },
-  "_big-shoulders-800-normal-IbCvOL6_.woff": {
-    "file": "assets/big-shoulders-800-normal-IbCvOL6_.woff",
-    "src": "_big-shoulders-800-normal-IbCvOL6_.woff"
+  "_fira-sans-700-normal-DgqLm3Fi.woff": {
+    "file": "assets/fira-sans-700-normal-DgqLm3Fi.woff",
+    "src": "_fira-sans-700-normal-DgqLm3Fi.woff"
   },
-  "_fonts-Bt94W3gA.css": {
-    "file": "assets/fonts-Bt94W3gA.css",
-    "src": "_fonts-Bt94W3gA.css"
+  "_fonts-Y8WsxcqU.css": {
+    "file": "assets/fonts-Y8WsxcqU.css",
+    "src": "_fonts-Y8WsxcqU.css"
   },
-  "_overpass-400-normal-BpeLJ0bs.woff2": {
-    "file": "assets/overpass-400-normal-BpeLJ0bs.woff2",
-    "src": "_overpass-400-normal-BpeLJ0bs.woff2"
+  "_roboto-condensed-700-normal-BOl6B_hI.woff": {
+    "file": "assets/roboto-condensed-700-normal-BOl6B_hI.woff",
+    "src": "_roboto-condensed-700-normal-BOl6B_hI.woff"
   },
-  "_overpass-400-normal-c_C8zulu.woff": {
-    "file": "assets/overpass-400-normal-c_C8zulu.woff",
-    "src": "_overpass-400-normal-c_C8zulu.woff"
+  "_roboto-condensed-700-normal-DRbp0YnP.woff2": {
+    "file": "assets/roboto-condensed-700-normal-DRbp0YnP.woff2",
+    "src": "_roboto-condensed-700-normal-DRbp0YnP.woff2"
   },
-  "_overpass-600-normal-25RhTNCi.woff2": {
-    "file": "assets/overpass-600-normal-25RhTNCi.woff2",
-    "src": "_overpass-600-normal-25RhTNCi.woff2"
+  "_roboto-condensed-800-normal-3yalVcRJ.woff": {
+    "file": "assets/roboto-condensed-800-normal-3yalVcRJ.woff",
+    "src": "_roboto-condensed-800-normal-3yalVcRJ.woff"
   },
-  "_overpass-600-normal-DhYQrzaY.woff": {
-    "file": "assets/overpass-600-normal-DhYQrzaY.woff",
-    "src": "_overpass-600-normal-DhYQrzaY.woff"
-  },
-  "_overpass-700-normal-BjBIVHw1.woff": {
-    "file": "assets/overpass-700-normal-BjBIVHw1.woff",
-    "src": "_overpass-700-normal-BjBIVHw1.woff"
-  },
-  "_overpass-700-normal-CQX2QTgM.woff2": {
-    "file": "assets/overpass-700-normal-CQX2QTgM.woff2",
-    "src": "_overpass-700-normal-CQX2QTgM.woff2"
+  "_roboto-condensed-800-normal-BKEDuQ6Q.woff2": {
+    "file": "assets/roboto-condensed-800-normal-BKEDuQ6Q.woff2",
+    "src": "_roboto-condensed-800-normal-BKEDuQ6Q.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-CgTJ-3kM.css",
+    "file": "assets/app-u8TIs628.css",
     "name": "app",
     "names": [
       "app.css"
@@ -52,15 +44,20 @@
     "src": "resources/css/app.css",
     "isEntry": true,
     "assets": [
-      "assets/tacho-Bc6PRDpw.svg"
+      "assets/tacho-Bc6PRDpw.svg",
+      "assets/badge-mark-e9dE1Ba3.svg"
     ]
+  },
+  "resources/img/badge-mark.svg": {
+    "file": "assets/badge-mark-e9dE1Ba3.svg",
+    "src": "resources/img/badge-mark.svg"
   },
   "resources/img/tacho.svg": {
     "file": "assets/tacho-Bc6PRDpw.svg",
     "src": "resources/img/tacho.svg"
   },
   "resources/js/app.js": {
-    "file": "assets/app-BVQ3Ygxg.js",
+    "file": "assets/app-CdAT-Eo7.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true

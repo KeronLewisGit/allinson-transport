@@ -43,6 +43,7 @@
 
     <div class="fixed inset-0 z-30 bg-black/40 lg:hidden" style="display:none" x-show="nav" x-transition.opacity @click="nav = false"></div>
     <aside class="fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col overflow-y-auto bg-cab-950 transition-transform lg:translate-x-0" :class="nav && 'translate-x-0'" aria-label="Back office">
+        <div class="goldbar-strip h-1.5 flex-none" aria-hidden="true"></div>
         <a href="{{ route('admin.dashboard') }}" class="flex h-16 flex-none items-center px-5"><x-logo tone="light" :small="true" /></a>
         <nav class="admin-nav flex-1 px-3 pt-2">
             @foreach ($groups as $group => $items)
@@ -53,7 +54,7 @@
                 @foreach ($visible as [$label, $route, $match, $icon, $badge])
                     <a href="{{ route($route) }}" @if(request()->routeIs($match)) aria-current="page" @endif>
                         <x-icon :name="$icon" class="h-[18px] w-[18px]" />{{ $label }}
-                        @if ($badge)<span class="num ml-auto bg-gold px-2 py-0.5 text-xs font-bold text-[#1b1619]">{{ $badge }}</span>@endif
+                        @if ($badge)<span class="num ml-auto bg-gold px-2 py-0.5 text-xs font-bold text-[#231f20]">{{ $badge }}</span>@endif
                     </a>
                 @endforeach
                 </div>
@@ -85,7 +86,7 @@
                 @endif
                 <div class="ml-auto flex flex-none items-center gap-1">
                     <button type="button" class="a-btn w-11 px-0 text-ink-2 hover:bg-surface-2" @click="toggleDensity()" :aria-pressed="(density === 'compact').toString()" aria-label="Compact rows" title="Compact rows"><x-icon name="density" /></button>
-                    <button type="button" class="a-btn w-11 px-0 text-ink-2 hover:bg-surface-2" onclick="toggleTheme()" aria-label="Switch light or dark theme"><x-icon name="moon" class="dark-hide h-5 w-5" /><x-icon name="sun" class="dark-show h-5 w-5" /></button>
+                    <button type="button" class="a-btn w-11 px-0 text-ink-2 hover:bg-surface-2" onclick="toggleTheme(event)" aria-label="Switch light or dark theme"><x-icon name="moon" class="dark-hide h-5 w-5" /><x-icon name="sun" class="dark-show h-5 w-5" /></button>
                 </div>
             </div>
         </header>

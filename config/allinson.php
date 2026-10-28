@@ -145,6 +145,7 @@ return [
     */
     'services' => [
         'regional' => [
+            'tab' => 'Transport',
             'title' => 'Regional transport and consolidation',
             'icon' => 'truck',
             'photo' => 'own-tipper',
@@ -154,6 +155,7 @@ return [
             'points' => ['From a single pallet to a full load', 'Consolidated loads leaving the North East daily', 'Personal service from a family firm'],
         ],
         'national' => [
+            'tab' => 'Distribution',
             'title' => 'UK trunking and distribution',
             'icon' => 'route',
             'photo' => 'own-reefer',
@@ -163,6 +165,7 @@ return [
             'points' => ['Full and part loads, nationwide', 'Dedicated resources at your premises on request', 'Regional distribution centres in our warehousing'],
         ],
         'specialist' => [
+            'tab' => 'Hiab',
             'title' => 'Hiab, crane-lifted and abnormal loads',
             'icon' => 'crane',
             'photo' => 'own-hiab',
@@ -172,6 +175,7 @@ return [
             'points' => ['Lorry-mounted crane (Hiab) deliveries', 'Long and out-of-gauge loads', 'Loads other carriers turned down'],
         ],
         'containers' => [
+            'tab' => 'Containers',
             'title' => 'Container storage and handling',
             'icon' => 'container',
             'photo' => 'own-container',
@@ -181,6 +185,7 @@ return [
             'points' => ['Import destuffing and export loading', 'Up to 500 TEU of container storage', 'Inventory, cross-docking and order fulfilment for the cargo'],
         ],
         'warehousing' => [
+            'tab' => 'Warehousing',
             'title' => 'Warehousing and order fulfilment',
             'icon' => 'warehouse',
             'photo' => 'own-warehouse',
@@ -190,6 +195,7 @@ return [
             'points' => ['Pallet, carton and item-level stock, online', 'Pick, pack, label and deliver', 'E-retail fulfilment to the final mile'],
         ],
         'consultancy' => [
+            'tab' => 'Logistics',
             'title' => 'Logistics consultancy and technology',
             'icon' => 'chart',
             'photo' => 'own-loading',

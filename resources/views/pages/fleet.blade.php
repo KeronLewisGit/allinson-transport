@@ -9,8 +9,8 @@
             <h2 id="fleet-title" class="display-2 mt-4">Built for everything from chilled to crane-lifted</h2>
             <p class="mt-5 measure text-ink-2">The company describes “a modern fleet of 120 vehicles, 250 trailers” that handles everything from refrigerated goods to 15-metre crane-lifted extrusions. Curtainsiders, refrigerated trailers, flatbeds, bulk trailers and lorry-mounted cranes all appear in its own photographs, in the deep red livery lettered “{{ ga('tagline') }}”.</p>
             <dl class="mt-8 grid grid-cols-2 gap-6">
-                <div class="figure"><dt class="sr-only">Vehicles</dt><dd><b class="num">{{ $f['vehicles']['value'] }}</b><span class="mt-2 block text-ink-2">vehicles</span></dd></div>
-                <div class="figure"><dt class="sr-only">Trailers</dt><dd><b class="num">{{ $f['trailers']['value'] }}</b><span class="mt-2 block text-ink-2">trailers</span></dd></div>
+                <div class="figure"><dt class="sr-only">Vehicles</dt><dd><b class="num"><span class="count" data-count>{{ $f['vehicles']['value'] }}</span></b><span class="mt-2 block text-ink-2">vehicles</span></dd></div>
+                <div class="figure"><dt class="sr-only">Trailers</dt><dd><b class="num"><span class="count" data-count>{{ $f['trailers']['value'] }}</span></b><span class="mt-2 block text-ink-2">trailers</span></dd></div>
             </dl>
             <p class="mt-4 text-sm text-ink-3">Source: <a class="text-link" href="{{ ga('sources.home.url') }}" rel="noopener">{{ ga('sources.home.label') }}</a></p>
         </div>
@@ -77,8 +77,8 @@
                 <h2 id="yard-title" class="display-2 mt-4">Off the quay, into the yard</h2>
                 <p class="mt-5 measure text-ink-2">{{ ga('services.containers.body') }}</p>
                 <dl class="mt-8 grid gap-6 sm:grid-cols-2">
-                    <div class="figure"><dt class="sr-only">Container yard</dt><dd><b class="num">{{ $f['container_yard']['value'] }}<small>sq ft</small></b><span class="mt-2 block text-ink-2">{{ $f['container_yard']['label'] }}</span></dd></div>
-                    <div class="figure"><dt class="sr-only">Stacker capacity</dt><dd><b class="num">{{ $f['stacker']['value'] }}<small>kg</small></b><span class="mt-2 block text-ink-2">{{ $f['stacker']['label'] }}</span></dd></div>
+                    <div class="figure"><dt class="sr-only">Container yard</dt><dd><b class="num"><span class="count" data-count>{{ $f['container_yard']['value'] }}</span><small>sq ft</small></b><span class="mt-2 block text-ink-2">{{ $f['container_yard']['label'] }}</span></dd></div>
+                    <div class="figure"><dt class="sr-only">Stacker capacity</dt><dd><b class="num"><span class="count" data-count>{{ $f['stacker']['value'] }}</span><small>kg</small></b><span class="mt-2 block text-ink-2">{{ $f['stacker']['label'] }}</span></dd></div>
                 </dl>
                 <p class="mt-4 text-sm text-ink-3">Source: <a class="text-link" href="{{ ga('sources.containers.url') }}" rel="noopener">{{ ga('sources.containers.label') }}</a></p>
             </div>

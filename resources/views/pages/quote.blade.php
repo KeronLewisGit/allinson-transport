@@ -5,8 +5,9 @@
 <x-layouts.site title="Request a haulage quote" description="Ask George Allinson (Transport) Ltd for a price: full load, part load, pallets, Hiab, abnormal loads or storage, from any UK postcode.">
     <x-page-header photo="a1m" position="center 60%" kicker="Haulage quote" title="Request a quote" lead="Postcodes, dates and weight are enough to start. The request goes to the depot nearest the collection, and the traffic office emails your price." :label="['From' => 'Your postcode', 'To' => 'Any UK postcode', '*Contents' => 'Quote request']" />
 
-    <section class="wrap mt-12 grid gap-12 md:mt-16 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <form method="POST" action="{{ route('quotes.store') }}" enctype="multipart/form-data" class="min-w-0 space-y-10" x-data="quoteForm(@js($current), @js((bool) old('adr')))" @submit="submit">
+    <section class="wrap mt-12 grid gap-12 md:mt-16 lg:grid-cols-[minmax(0,1fr)_20rem]" x-data="quoteForm(@js($current), @js((bool) old('adr')))">
+        <form method="POST" action="{{ route('quotes.store') }}" enctype="multipart/form-data" class="min-w-0 space-y-10" x-ref="form" @submit="submit" @input.debounce.150ms="track" @change="track">
+            <x-route-strip class="lg:hidden" />
             @csrf
             <x-form-errors />
             <x-honeypot />
@@ -72,7 +73,8 @@
             </div>
         </form>
 
-        <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
+        <aside class="space-y-6 lg:sticky lg:top-20 lg:self-start">
+            <x-route-strip class="hidden lg:block" />
             <x-consignment head="What happens next" :barcode="false" :cols="1" :fields="[
                 '1 · Routed' => 'To the depot nearest the collection',
                 '2 · Priced' => 'By that traffic office',

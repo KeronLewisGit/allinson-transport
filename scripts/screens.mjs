@@ -31,7 +31,7 @@ for (const [vw, vh, tag] of [[390, 844, 'phone'], [1440, 900, 'desk']]) {
       });
       const over = await page.evaluate(() => {
         const w = document.documentElement.clientWidth; const bad = [];
-        document.querySelectorAll('body *').forEach((e) => { const r = e.getBoundingClientRect(); if (r.right > w + 1 && r.width > 0 && !e.closest('.table-box,.tag-row,.overflow-x-auto,.hero-photo,[aria-hidden=true]')) bad.push(e.tagName + '.' + [...e.classList].slice(0, 3).join('.')); });
+        document.querySelectorAll('body *').forEach((e) => { const r = e.getBoundingClientRect(); if (r.right > w + 1 && r.width > 0 && !e.closest('.table-box,.tag-row,.overflow-x-auto,.hero-photo,.marquee,[aria-hidden=true]')) bad.push(e.tagName + '.' + [...e.classList].slice(0, 3).join('.')); });
         return { scroll: document.documentElement.scrollWidth > w, bad: bad.slice(0, 5) };
       });
       if (over.scroll || over.bad.length) problems.push(`${tag}/${scheme} ${url}: ${JSON.stringify(over)}`);

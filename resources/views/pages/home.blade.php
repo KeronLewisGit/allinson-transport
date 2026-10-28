@@ -3,33 +3,39 @@
     $source = ga('sources.home');
 @endphp
 <x-layouts.site>
-    {{-- Home hero: the page-header band, taller, with the firm's own lorry behind the scrim. --}}
-    <section class="tacho relative isolate overflow-hidden bg-cab-900 text-white on-dark">
+    {{--
+        Home hero, after the company's own header: the night-time photo of the Faverdale offices
+        and a lorry, the GA badge, the company name in condensed caps and "We care for your cargo".
+        Motion (photo push-in, badge outline drawing, words rising, label dropping) is added by
+        CSS and JS; without either, everything is simply there.
+    --}}
+    <section class="hero-home relative isolate overflow-hidden bg-cab-900 text-white on-dark">
         <div class="hero-photo absolute inset-0 -z-10">
-            <x-photo key="a40" alt="" :eager="true" sizes="100vw" class="h-full w-full" position="62% 55%" />
-            <div class="hero-scrim absolute inset-0"></div>
+            <x-photo key="own-depot-night" alt="" :eager="true" sizes="100vw" class="h-full w-full" position="62% 18%" />
+            <div class="hero-scrim hero-scrim-night absolute inset-0"></div>
         </div>
-        <div class="wrap grid gap-10 pb-14 pt-16 md:pb-20 md:pt-28 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-end lg:gap-14">
+        <div class="wrap grid gap-10 pb-16 pt-[min(52vw,15rem)] md:pt-20 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-end lg:gap-14 lg:pb-24 lg:pt-24">
             <div class="min-w-0">
-                <x-lane>Family-run haulage since {{ ga('founded') }} · Darlington</x-lane>
-                <h1 class="display-1 mt-6 max-w-4xl">{{ ga('tagline') }}</h1>
-                <p class="lead mt-6 text-white/85">Road haulage, container handling and {{ $figures['warehousing']['value'] }} sq ft of warehousing, from a single pallet to 15-metre crane-lifted extrusions, run from Faverdale with depots in Yorkshire, Gloucestershire, Cambridgeshire and Liverpool.</p>
-                <div class="mt-8 flex flex-wrap gap-3">
+                <x-badge :draw="true" class="h-16 w-[6.9rem] md:h-24 md:w-[10.3rem]" />
+                <p class="font-display mt-5 text-[1.3rem] font-bold uppercase tracking-[0.02em] text-white md:text-[1.75rem]" data-enter style="--d: 0.35s">George Allinson (Transport) Ltd</p>
+                <h1 class="display-1 mt-2 max-w-4xl" data-words>{{ ga('tagline') }}</h1>
+                <p class="lead mt-6 text-white/85" data-enter style="--d: 1.25s">Road haulage, container handling and {{ $figures['warehousing']['value'] }} sq ft of warehousing, from a single pallet to 15-metre crane-lifted extrusions, run from Faverdale with depots in Yorkshire, Gloucestershire, Cambridgeshire and Liverpool.</p>
+                <div class="mt-8 flex flex-wrap gap-3" data-enter style="--d: 1.45s">
                     <a href="{{ route('quotes.create') }}" class="btn btn-red">Request a haulage quote<x-icon name="arrow-right" class="nudge h-4 w-4" /></a>
                     <a href="{{ route('warehousing.create') }}" class="btn btn-on-dark">Warehousing enquiry</a>
                     <a href="{{ tel_href(ga('phone')) }}" class="btn btn-on-dark"><x-icon name="phone" class="h-4 w-4" />{{ format_phone(ga('phone')) }}</a>
                 </div>
             </div>
-            <x-consignment class="hidden rotate-[1.5deg] lg:grid" head="Allinson Transport" ref="EST. 1955" :fields="[
+            <x-consignment class="hidden rotate-[1.5deg] lg:grid" data-enter head="Allinson Transport" ref="EST. 1955" :fields="[
                 'Vehicles' => $figures['vehicles']['value'],
                 'Trailers' => $figures['trailers']['value'],
                 '*Warehousing' => $figures['warehousing']['value'].' sq ft',
                 '*Depots' => 'Durham · Yorks · Glos · Cambs · L\'pool',
             ]" />
         </div>
-        <p class="wrap pb-4 text-right text-xs text-white/70">Photo: one of the company's lorries on the A40 at Monmouth</p>
-        <div class="chevrons" aria-hidden="true"></div>
+        <p class="wrap pb-4 text-right text-xs text-white/70">Photo: the company's own, from its current website</p>
     </section>
+    <x-marquee :items="['~'.ga('tagline'), 'Haulage', 'Storage', 'Containers', 'Hiab', 'Pallets to full loads', 'Warehousing', 'Logistics', 'Since '.ga('founded')]" />
 
     {{-- The firm's published figures, quoted exactly, with the source. --}}
     <section class="wrap mt-16 md:mt-24" aria-labelledby="figures-title">
@@ -45,7 +51,17 @@
                 @php($f = $figures[$key])
                 <div class="figure" data-reveal style="--reveal-delay: {{ $i * 80 }}ms">
                     <dt class="sr-only">{{ $f['label'] }}</dt>
-                    <dd><b class="num">{{ $f['value'] }}@isset($f['unit'])<small>{{ $f['unit'] }}</small>@endisset</b><span class="mt-2 block text-ink-2">{{ $f['label'] }}</span></dd>
+                    <dd>
+                        <b class="num">
+                            @if ($key === 'founded')
+                                {{ $f['value'] }}
+                            @else
+                                <span class="count" data-count>{{ $f['value'] }}</span>
+                            @endif
+                            @isset($f['unit'])<small>{{ $f['unit'] }}</small>@endisset
+                        </b>
+                        <span class="mt-2 block text-ink-2">{{ $f['label'] }}</span>
+                    </dd>
                 </div>
             @endforeach
         </dl>
@@ -60,7 +76,7 @@
             <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @foreach (ga('services') as $key => $s)
                     <article class="card-link group flex flex-col bg-surface shadow-sm" data-reveal style="--reveal-delay: {{ ($loop->index % 3) * 70 }}ms">
-                        <x-photo :key="$s['photo']" :alt="$s['title']" sizes="(min-width: 1024px) 26rem, (min-width: 768px) 50vw, 100vw" class="card-img aspect-[3/2]" />
+                        <div class="relative"><span class="tab-label">{{ $s['tab'] }}</span><x-photo :key="$s['photo']" :alt="$s['title']" sizes="(min-width: 1024px) 26rem, (min-width: 768px) 50vw, 100vw" class="card-img aspect-[3/2]" /></div>
                         <div class="flex flex-1 flex-col border-t-4 border-livery p-6">
                             <h3 class="font-display flex items-center gap-2.5 text-2xl font-extrabold uppercase leading-none"><x-icon :name="$s['icon']" class="h-6 w-6 flex-none text-primary" />{{ $s['title'] }}</h3>
                             <p class="mt-3 flex-1 text-ink-2">{{ $s['summary'] }}</p>
@@ -78,15 +94,19 @@
         <h2 id="start-title" class="display-2 mt-4">Three ways to get moving</h2>
         <ol class="mt-10 grid gap-6 lg:grid-cols-3">
             @foreach ([
-                ['Request a quote', 'Full load, part load, pallets, Hiab or abnormal: give us the postcodes, dates and weight and the nearest depot prices it.', 'quotes.create', 'Request a quote', 'calculator'],
-                ['Ask about warehousing', 'Tell us how many pallet spaces, for how long and what the goods are. We will call you back about space and handling.', 'warehousing.create', 'Warehousing enquiry', 'warehouse'],
-                ['Get a free benchmark', 'Share six months of your order profile in confidence and our managers will compare it with what is possible.', 'contact', 'Ask for a benchmark', 'chart'],
-            ] as $i => [$title, $body, $route, $cta, $icon])
-                <li class="sheet flex flex-col p-6 md:p-7">
-                    <div class="flex items-center justify-between"><x-junction :n="$i + 1" /><x-icon :name="$icon" class="h-7 w-7 text-primary" /></div>
-                    <h3 class="font-display mt-5 text-3xl font-extrabold uppercase leading-none">{{ $title }}</h3>
-                    <p class="mt-3 flex-1 text-ink-2">{{ $body }}</p>
-                    <a href="{{ route($route, $route === 'contact' ? ['topic' => 'benchmark'] : []) }}" class="btn btn-primary mt-6 self-start">{{ $cta }}<x-icon name="arrow-right" class="nudge h-4 w-4" /></a>
+                ['Request a quote', 'Haulage quote', 'Full load, part load, pallets, Hiab or abnormal: give us the postcodes, dates and weight and the nearest depot prices it.', 'quotes.create', 'Request a quote', 'calculator', null],
+                ['Ask about warehousing', 'Warehousing', 'Tell us how many pallet spaces, for how long and what the goods are. We will call you back about space and handling.', 'warehousing.create', 'Warehousing enquiry', 'warehouse', null],
+                ['Take the Allinson challenge', 'Free consultancy', 'Share six months of your order profile in confidence and our managers will compare it with what is possible.', 'contact', 'Ask for a benchmark', 'chart', '“Show us your order book and we\'ll show you logistics savings.”'],
+            ] as $i => [$title, $head, $body, $route, $cta, $icon, $quote])
+                <li class="box flex flex-col" data-reveal style="--reveal-delay: {{ $i * 90 }}ms">
+                    <div class="boxhead"><span>{{ $head }}</span><x-junction :n="$i + 1" /></div>
+                    <div class="flex flex-1 flex-col p-6 md:p-7">
+                        <x-icon :name="$icon" class="h-7 w-7 text-primary" />
+                        <h3 class="font-display mt-4 text-3xl font-bold uppercase leading-none">{{ $title }}</h3>
+                        @if ($quote)<p class="mt-3 font-bold text-ink">{{ $quote }}</p>@endif
+                        <p class="mt-3 flex-1 text-ink-2">{{ $body }}</p>
+                        <a href="{{ route($route, $route === 'contact' ? ['topic' => 'benchmark'] : []) }}" class="btn btn-primary mt-6 self-start">{{ $cta }}<x-icon name="arrow-right" class="nudge h-4 w-4" /></a>
+                    </div>
                 </li>
             @endforeach
         </ol>
@@ -102,15 +122,18 @@
                     <p class="mt-5 max-w-xl text-white/80">Head office, warehousing and the container yard are at Faverdale, Darlington, close to Teesport and the Port of Tyne. The company's site lists facilities in Yorkshire, Gloucestershire, Cambridgeshire and Liverpool too, so a quote request goes straight to the depot nearest the collection.</p>
                     <a href="{{ route('depots') }}" class="btn btn-light mt-8">See the depots<x-icon name="arrow-right" class="nudge h-4 w-4" /></a>
                 </div>
-                <ul class="grid gap-3 sm:grid-cols-2">
-                    @foreach (ga('depots') as $key => $d)
-                        <li @class(['border border-white/15 bg-white/[0.04] p-5', 'sm:col-span-2 border-l-4 !border-l-livery' => $key === 'darlington'])>
-                            <p class="font-display text-2xl font-extrabold uppercase leading-none">{{ $d['name'] }}</p>
-                            <p class="mt-1.5 text-sm text-white/70">{{ $d['region'] }}</p>
-                            @if ($d['address'])<p class="mt-2 text-sm text-white/85">{{ $d['address'] }}</p>@endif
-                        </li>
-                    @endforeach
-                </ul>
+                <div class="grid items-center gap-6 sm:grid-cols-[minmax(0,1fr)_14rem]">
+                    <x-depot-map class="mx-auto max-w-[24rem] text-white" />
+                    <ul class="grid gap-2 text-sm">
+                        @foreach (ga('depots') as $key => $d)
+                            <li @class(['border border-white/15 bg-white/[0.04] px-4 py-3', 'border-l-4 !border-l-livery' => $key === 'darlington'])>
+                                <p class="font-display text-xl font-bold uppercase leading-none">{{ $d['name'] }}</p>
+                                @if ($key === 'darlington' || $d['region'] !== $d['name'])<p class="mt-1 text-white/75">{{ $key === 'darlington' ? 'Head office, Faverdale DL3 0PH' : $d['region'] }}</p>@endif
+                            </li>
+                        @endforeach
+                        <li class="px-1 pt-1 text-white/70">Regional markers show the region, not a site.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
@@ -125,6 +148,7 @@
             <x-lane>Careers</x-lane>
             <h2 id="careers-title" class="display-2 mt-4">Drive for a family firm</h2>
             <p class="mt-5 measure text-ink-2">{{ ga('careers.intro') }}</p>
+            <p class="mt-5 flex flex-wrap items-center gap-3"><span class="word-doc" data-strike><x-icon name="file-word" class="h-4 w-4" />Employment-Application-Form-2012-Website.doc</span><span class="inline-flex items-center gap-1.5 font-bold text-ink"><x-icon name="smartphone" class="h-5 w-5 text-primary" />Five minutes on your phone</span></p>
             <p class="mt-4 measure text-ink-2">Apply online in about five minutes: no Word form to download, print or post.</p>
             <div class="mt-7 flex flex-wrap gap-3">
                 <a href="{{ route('careers.index') }}" class="btn btn-primary">{{ $openJobs > 0 ? 'See '.$openJobs.' open '.str('vacancy')->plural($openJobs) : 'Careers' }}<x-icon name="arrow-right" class="nudge h-4 w-4" /></a>

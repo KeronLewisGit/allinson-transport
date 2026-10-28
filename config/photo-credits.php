@@ -63,7 +63,7 @@ return [
         'changes' => 'Resized and converted to WebP.',
         'used_for' => 'Careers (illustrative)',
     ],
-    'own-depot-night' => $own('Faverdale depot at dusk', 'images/allinson_bg.jpg', 'Depots; contact'),
+    'own-depot-night' => $own('Faverdale depot at dusk', 'images/allinson_bg.jpg', 'Home (header); depots; contact'),
     'own-lineup' => $own('Scania tractor units lined up in Allinson livery', 'cmsimages/44136allinson.jpg', 'Fleet and warehousing; about'),
     'own-loading' => $own('Curtainsider loading by forklift', 'cmsimages/2962549625AT__1411.jpg', 'Home; services'),
     'own-loading-2' => $own('Loading a curtainsider at the container yard', 'cmsimages/38907AT__142.jpg', 'Careers'),
