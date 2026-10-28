@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /admin
+Disallow: /login
+Sitemap: https://www.allinsontransport.co.uk/sitemap.xml

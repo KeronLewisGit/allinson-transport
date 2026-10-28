@@ -1,0 +1,68 @@
+{
+  "_big-shoulders-700-normal-BCJQMx3s.woff": {
+    "file": "assets/big-shoulders-700-normal-BCJQMx3s.woff",
+    "src": "_big-shoulders-700-normal-BCJQMx3s.woff"
+  },
+  "_big-shoulders-700-normal-BXkjPpB5.woff2": {
+    "file": "assets/big-shoulders-700-normal-BXkjPpB5.woff2",
+    "src": "_big-shoulders-700-normal-BXkjPpB5.woff2"
+  },
+  "_big-shoulders-800-normal-BmnmSKe3.woff2": {
+    "file": "assets/big-shoulders-800-normal-BmnmSKe3.woff2",
+    "src": "_big-shoulders-800-normal-BmnmSKe3.woff2"
+  },
+  "_big-shoulders-800-normal-IbCvOL6_.woff": {
+    "file": "assets/big-shoulders-800-normal-IbCvOL6_.woff",
+    "src": "_big-shoulders-800-normal-IbCvOL6_.woff"
+  },
+  "_fonts-Bt94W3gA.css": {
+    "file": "assets/fonts-Bt94W3gA.css",
+    "src": "_fonts-Bt94W3gA.css"
+  },
+  "_overpass-400-normal-BpeLJ0bs.woff2": {
+    "file": "assets/overpass-400-normal-BpeLJ0bs.woff2",
+    "src": "_overpass-400-normal-BpeLJ0bs.woff2"
+  },
+  "_overpass-400-normal-c_C8zulu.woff": {
+    "file": "assets/overpass-400-normal-c_C8zulu.woff",
+    "src": "_overpass-400-normal-c_C8zulu.woff"
+  },
+  "_overpass-600-normal-25RhTNCi.woff2": {
+    "file": "assets/overpass-600-normal-25RhTNCi.woff2",
+    "src": "_overpass-600-normal-25RhTNCi.woff2"
+  },
+  "_overpass-600-normal-DhYQrzaY.woff": {
+    "file": "assets/overpass-600-normal-DhYQrzaY.woff",
+    "src": "_overpass-600-normal-DhYQrzaY.woff"
+  },
+  "_overpass-700-normal-BjBIVHw1.woff": {
+    "file": "assets/overpass-700-normal-BjBIVHw1.woff",
+    "src": "_overpass-700-normal-BjBIVHw1.woff"
+  },
+  "_overpass-700-normal-CQX2QTgM.woff2": {
+    "file": "assets/overpass-700-normal-CQX2QTgM.woff2",
+    "src": "_overpass-700-normal-CQX2QTgM.woff2"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-CgTJ-3kM.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "assets": [
+      "assets/tacho-Bc6PRDpw.svg"
+    ]
+  },
+  "resources/img/tacho.svg": {
+    "file": "assets/tacho-Bc6PRDpw.svg",
+    "src": "resources/img/tacho.svg"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BVQ3Ygxg.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}
